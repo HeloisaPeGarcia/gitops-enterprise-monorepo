@@ -6,7 +6,7 @@
 
 ***
 
-[![GitOps CI & Security Validation](https://github.com/HeloisaPeGarcia/argo-cd/actions/workflows/gitops-ci.yml/badge.svg)](https://github.com/HeloisaPeGarcia/argo-cd/actions/workflows/gitops-ci.yml)
+[![GitOps CI & Security Validation](https://github.com/HeloisaPeGarcia/gitops-enterprise-monorepo/actions/workflows/gitops-ci.yml/badge.svg)](https://github.com/HeloisaPeGarcia/gitops-enterprise-monorepo/actions/workflows/gitops-ci.yml)(
 ![Terragrunt](https://img.shields.io/badge/Terragrunt-v0.55%2B-blue?style=flat&logo=terraform)
 ![ArgoCD](https://img.shields.io/badge/ArgoCD-v2.10%2B-orange?style=flat&logo=argo)
 ![Kubernetes](https://img.shields.io/badge/Kubernetes-1.29%2B-326CE5?style=flat&logo=kubernetes)
