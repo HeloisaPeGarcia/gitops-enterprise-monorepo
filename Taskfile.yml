@@ -1,0 +1,50 @@
+# https://taskfile.dev
+version: '3'
+
+tasks:
+  default:
+    desc: Lista todas as tarefas disponíveis
+    cmds:
+      - task --list
+
+  dev:up:
+    desc: Inicializa o cluster local (Kind) e instala o ArgoCD com o Root App
+    cmds:
+      - kind create cluster --name gitops-demo --config scripts/kind-config.yaml || true
+      - kubectl create namespace argocd || true
+      - kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+      - kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=argocd-server -n argocd --timeout=180s
+      - kubectl wait --for=condition=established crd/applications.argoproj.io --timeout=60s
+      - kubectl wait --for=condition=established crd/appprojects.argoproj.io --timeout=60s
+      - kubectl apply -f argocd/projects/system-project.yaml
+      - kubectl apply -f argocd/projects/workloads-project.yaml
+      - kubectl apply -f argocd/root-app.yaml
+
+  dev:down:
+    desc: Remove o cluster Kubernetes local (Kind)
+    cmds:
+      - kind delete cluster --name gitops-demo
+
+  lint:
+    desc: Executa linters no Helm Chart e validação YAML de todos os manifestos
+    cmds:
+      - helm lint charts/sample-app
+      - find platform applications argocd -name "*.yaml" -type f | xargs -I {} yq eval '{}' > /dev/null
+
+  iac:init:
+    desc: Inicializa os módulos do Terragrunt no ambiente DEV
+    dir: iac/environments/dev
+    cmds:
+      - terragrunt run-all init
+
+  iac:plan:
+    desc: Executa o plano do Terragrunt para o ambiente DEV
+    dir: iac/environments/dev
+    cmds:
+      - terragrunt run-all plan
+
+  iac:plan-prod:
+    desc: Executa o plano do Terragrunt para o ambiente PROD (somente leitura)
+    dir: iac/environments/prod
+    cmds:
+      - terragrunt run-all plan

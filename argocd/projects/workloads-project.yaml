@@ -1,0 +1,57 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: workloads
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: "Projeto restrito para workloads e microsserviços de negócio (Dev / Prod)"
+  sourceRepos:
+    - https://github.com/HeloisaPeGarcia/argo-cd.git
+
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: sample-app-dev
+    - server: https://kubernetes.default.svc
+      namespace: sample-app-prod
+
+  # clusterResourceBlacklist bloqueia qualquer recurso de escopo de cluster (ClusterRole, CRD, etc.)
+  # Workloads de negócio não devem ter acesso a recursos globais do cluster.
+  clusterResourceBlacklist:
+    - group: '*'
+      kind: '*'
+
+  namespaceResourceWhitelist:
+    - group: ''
+      kind: Pod
+    - group: ''
+      kind: Service
+    - group: ''
+      kind: ConfigMap
+    - group: ''
+      kind: Secret
+    - group: ''
+      kind: ServiceAccount
+    - group: 'apps'
+      kind: Deployment
+    - group: 'argoproj.io'
+      kind: Rollout
+    - group: 'argoproj.io'
+      kind: AnalysisTemplate
+    - group: 'argoproj.io'
+      kind: AnalysisRun
+    - group: 'networking.k8s.io'
+      kind: Ingress
+    - group: 'autoscaling'
+      kind: HorizontalPodAutoscaler
+    - group: 'policy'
+      kind: PodDisruptionBudget
+    - group: 'bitnami.com'
+      kind: SealedSecret
+
+  roles:
+    - name: developer-read-only
+      description: Acesso apenas leitura aos workloads para desenvolvedores
+      policies:
+        - p, proj:workloads:developer-read-only, applications, get, workloads/*, allow

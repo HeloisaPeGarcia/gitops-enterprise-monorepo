@@ -1,0 +1,34 @@
+apiVersion: v2
+name: sample-app
+description: |
+  Helm Chart de Produção com Argo Rollouts (Canary Deploy), HPA, PDB, SecurityContext Hardening
+  e TopologySpreadConstraints para alta disponibilidade entre zonas.
+type: application
+version: 1.1.0
+appVersion: "1.27.0"
+
+keywords:
+  - gitops
+  - canary
+  - argo-rollouts
+  - kubernetes
+  - production-ready
+
+maintainers:
+  - name: HeloisaPeGarcia
+    url: https://github.com/HeloisaPeGarcia
+
+annotations:
+ 
+  artifacthub.io/changes: |
+    - kind: added
+      description: PodDisruptionBudget para garantir disponibilidade durante manutenções
+    - kind: added
+      description: TopologySpreadConstraints para distribuição entre Zonas de Disponibilidade
+    - kind: added
+      description: SecurityContext hardening com runAsNonRoot e capabilities drop ALL
+    - kind: added
+      description: readinessProbe e livenessProbe para suporte correto ao Canary
+    - kind: added
+      description: SealedSecret com feature flag (desabilitado por padrão)
+  artifacthub.io/license: MIT

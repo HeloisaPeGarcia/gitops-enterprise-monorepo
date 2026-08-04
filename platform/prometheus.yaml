@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prometheus
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: system
+  source:
+    repoURL: https://prometheus-community.github.io/helm-charts
+    targetRevision: 58.7.0
+    chart: kube-prometheus-stack
+    helm:
+      values: |
+        grafana:
+          enabled: true
+          # O Secret 'grafana-admin-credentials' deve ser criado antes da sincronização
+          # via SealedSecret ou External Secrets Operator.
+          admin:
+            existingSecret: "grafana-admin-credentials"
+            userKey: "admin-user"
+            passwordKey: "admin-password"
+        prometheus:
+          prometheusSpec:
+            # false permite scrape de ServiceMonitors de outros charts (ex: nginx-ingress)
+            serviceMonitorSelectorNilUsesHelmValues: false
+        alertmanager:
+          enabled: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      # CRDs do prometheus-operator excedem o limite padrão do kubectl apply
+      - ServerSideApply=true

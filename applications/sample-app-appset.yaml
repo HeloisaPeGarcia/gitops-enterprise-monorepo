@@ -1,0 +1,43 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: sample-app-appset
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        - env: dev
+          namespace: sample-app-dev
+        - env: prod
+          namespace: sample-app-prod
+
+  template:
+    metadata:
+      name: '{{env}}-sample-app'
+      annotations:
+        notifications.argoproj.io/subscribe.on-rollback.slack: "alerts-gitops"
+    spec:
+      project: workloads
+      source:
+        repoURL: https://github.com/HeloisaPeGarcia/argo-cd.git
+        targetRevision: HEAD
+        path: charts/sample-app
+        helm:
+          valueFiles:
+            - values.yaml
+            - ../../environments/{{env}}/values.yaml
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{namespace}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+        retry:
+          limit: 3
+          backoff:
+            duration: 5s
+            factor: 2
+            maxDuration: 1m

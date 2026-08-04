@@ -1,0 +1,16 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ArgoCD
+metadata:
+  name: argocd
+  namespace: argocd
+spec:
+  notifications:
+    templates:
+      template.rollout-rollback: |
+        message: |
+          ⚠️ Alerta de Rollback no Argo Rollouts!
+          A aplicação {{.app.metadata.name}} sofreu rollback automático devido à falha nos testes de análise de métricas de sucesso do Prometheus.
+    triggers:
+      trigger.on-rollback: |
+        - when: app.status.health.status == 'Degraded'
+          send: [rollout-rollback]
