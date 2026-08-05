@@ -8,8 +8,10 @@ spec:
     - list:
         - env: dev
           namespace: sample-app-dev
+          revision: HEAD
         - env: prod
           namespace: sample-app-prod
+          revision: main
 
   template:
     metadata:
@@ -19,8 +21,8 @@ spec:
     spec:
       project: workloads
       source:
-        repoURL: https://github.com/HeloisaPeGarcia/argo-cd.git
-        targetRevision: HEAD
+        repoURL: https://github.com/HeloisaPeGarcia/gitops-enterprise-monorepo.git
+        targetRevision: '{{revision}}'
         path: charts/sample-app
         helm:
           valueFiles:

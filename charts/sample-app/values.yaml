@@ -41,8 +41,8 @@ podSecurityContext:
 
 securityContext:
   allowPrivilegeEscalation: false
-  # readOnlyRootFilesystem desabilitado: Nginx precisa escrever em /tmp e /var/cache/nginx
-  readOnlyRootFilesystem: false
+  # readOnlyRootFilesystem habilitado: Nginx utiliza volumes emptyDir para /tmp, /var/cache/nginx e /var/run
+  readOnlyRootFilesystem: true
   runAsNonRoot: true
   capabilities:
     drop:
@@ -51,6 +51,9 @@ securityContext:
 podDisruptionBudget:
   enabled: true
   minAvailable: 1
+
+networkPolicy:
+  enabled: true
 
 topologySpreadConstraints:
   enabled: true
