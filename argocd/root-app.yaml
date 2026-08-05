@@ -8,7 +8,7 @@ metadata:
 spec:
   project: system
   source:
-    repoURL: https://github.com/HeloisaPeGarcia/argo-cd.git
+    repoURL: https://github.com/HeloisaPeGarcia/gitops-enterprise-monorepo.git
     targetRevision: HEAD
     path: platform
   destination:
@@ -37,7 +37,7 @@ metadata:
 spec:
   project: system
   source:
-    repoURL: https://github.com/HeloisaPeGarcia/argo-cd.git
+    repoURL: https://github.com/HeloisaPeGarcia/gitops-enterprise-monorepo.git
     targetRevision: HEAD
     path: applications
   destination:

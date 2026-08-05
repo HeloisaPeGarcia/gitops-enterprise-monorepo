@@ -8,7 +8,7 @@ metadata:
 spec:
   description: "Projeto restrito para workloads e microsserviços de negócio (Dev / Prod)"
   sourceRepos:
-    - https://github.com/HeloisaPeGarcia/argo-cd.git
+    - https://github.com/HeloisaPeGarcia/gitops-enterprise-monorepo.git
 
   destinations:
     - server: https://kubernetes.default.svc
@@ -43,6 +43,8 @@ spec:
       kind: AnalysisRun
     - group: 'networking.k8s.io'
       kind: Ingress
+    - group: 'networking.k8s.io'
+      kind: NetworkPolicy
     - group: 'autoscaling'
       kind: HorizontalPodAutoscaler
     - group: 'policy'
