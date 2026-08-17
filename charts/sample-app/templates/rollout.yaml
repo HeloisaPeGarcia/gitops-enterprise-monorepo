@@ -53,7 +53,7 @@ spec:
           {{- end }}
           ports:
             - name: http
-              containerPort: 80
+              containerPort: {{ .Values.containerPort | default 8080 }}
               protocol: TCP
           {{- with .Values.readinessProbe }}
           readinessProbe:

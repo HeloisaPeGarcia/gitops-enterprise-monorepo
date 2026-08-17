@@ -1,1 +1,39 @@
-# Configurações do Ambiente de Produção (prod)\nreplicaCount: 3  # Alta disponibilidade (HA) em produção com 3 réplicas\n\ningress:\n  hosts:\n    - host: prod-sample.local\n      paths:\n        - path: /\n          pathType: Prefix\n\n# Estratégia de Canary mais conservadora para Produção\nrollout:\n  steps:\n    - setWeight: 10\n    - pause:\n        duration: 30s  # Pausa mais longa para monitorar erros antes de aumentar a carga\n    - setWeight: 50\n    - pause:\n        duration: 30s\n\n# Recursos mais elevados em Produção para suportar maior tráfego\nresources:\n  limits:\n    cpu: 500m\n    memory: 512Mi\n  requests:\n    cpu: 250m\n    memory: 256Mi\n\n# HPA Ativado em Produção\nhpa:\n  enabled: true\n  minReplicas: 3\n  maxReplicas: 10\n  targetCPUUtilizationPercentage: 75\n\n
+# Configurações do Ambiente de Produção (prod)
+replicaCount: 3  # Alta disponibilidade (HA) em produção com 3 réplicas
+
+image:
+  repository: nginxinc/nginx-unprivileged
+  tag: "1.27-alpine"
+
+ingress:
+  hosts:
+    - host: prod-sample.local
+      paths:
+        - path: /
+          pathType: Prefix
+
+# Estratégia de Canary mais conservadora para Produção
+rollout:
+  steps:
+    - setWeight: 10
+    - pause:
+        duration: 30s  # Pausa mais longa para monitorar erros antes de aumentar a carga
+    - setWeight: 50
+    - pause:
+        duration: 30s
+
+# Recursos mais elevados em Produção para suportar maior tráfego
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+
+# HPA Ativado em Produção
+hpa:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 75

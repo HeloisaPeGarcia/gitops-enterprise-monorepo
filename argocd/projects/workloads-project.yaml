@@ -51,6 +51,10 @@ spec:
       kind: PodDisruptionBudget
     - group: 'bitnami.com'
       kind: SealedSecret
+    - group: 'monitoring.coreos.com'
+      kind: ServiceMonitor
+    - group: 'monitoring.coreos.com'
+      kind: PodMonitor
 
   roles:
     - name: developer-read-only
