@@ -22,6 +22,13 @@ inputs = {
   cluster_endpoint_private_access = true
 
   enable_cluster_creator_admin_permissions = true
+  enable_irsa                              = true
+
+  # Criptografia de secrets com KMS em producao
+  create_kms_key = local.is_prod
+  cluster_encryption_config = local.is_prod ? {
+    resources = ["secrets"]
+  } : {}
 
   eks_managed_node_groups = {
     general = {

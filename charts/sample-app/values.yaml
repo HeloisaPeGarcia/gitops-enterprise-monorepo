@@ -1,9 +1,11 @@
 replicaCount: 2
 
 image:
-  repository: nginx
+  repository: nginxinc/nginx-unprivileged
   pullPolicy: IfNotPresent
-  tag: "1.27.0"
+  tag: "1.27-alpine"
+
+containerPort: 8080
 
 service:
   type: ClusterIP
@@ -72,6 +74,9 @@ hpa:
 sealedSecret:
   enabled: false
   encryptedDBPassword: ""
+
+prometheus:
+  url: "http://prometheus-kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090"
 
 readinessProbe:
   httpGet:

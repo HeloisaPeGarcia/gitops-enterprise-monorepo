@@ -1,5 +1,7 @@
 locals {
-  env        = get_env("TG_ENV", "dev")
+  # Carrega automaticamente o env.hcl do ambiente correspondente com fallback seguro
+  env_config = read_terragrunt_config(find_in_parent_folders("env.hcl", "env.hcl"), { locals = { env = get_env("TG_ENV", "dev") } })
+  env        = try(local.env_config.locals.env, get_env("TG_ENV", "dev"))
   aws_region = get_env("AWS_REGION", "us-east-1")
 }
 

@@ -28,6 +28,7 @@ concurrency:
 
 jobs:
   lint-and-validate:
+    name: Lint & Schema Validation
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -41,16 +42,18 @@ jobs:
 
       - name: YAML syntax validation
         run: |
-          find platform applications argocd -name "*.yaml" -type f | xargs -I {} yq eval '{}' > /dev/null
+          find platform applications argocd -name "*.yaml" -type f -exec yq eval '.' {} + > /dev/null
 
       - name: Kubeconform (schema validation)
         run: |
           curl -sSL -o kubeconform.tar.gz https://github.com/yannh/kubeconform/releases/download/v0.6.4/kubeconform-linux-amd64.tar.gz
           tar xf kubeconform.tar.gz
+          helm template charts/sample-app -f environments/dev/values.yaml | ./kubeconform -strict -summary -ignore-missing-schemas
           helm template charts/sample-app -f environments/prod/values.yaml | ./kubeconform -strict -summary -ignore-missing-schemas
           find platform applications -name "*.yaml" -type f | xargs ./kubeconform -strict -summary -ignore-missing-schemas
 
   security-and-compliance:
+    name: Security & Secret Scanning
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -72,10 +75,8 @@ jobs:
           severity: 'CRITICAL,HIGH'
 
   iac-validate:
+    name: IaC Lint & Validation
     runs-on: ubuntu-latest
-    if: |
-      contains(join(github.event.commits.*.modified, ' '), 'iac/') ||
-      contains(join(github.event.pull_request.files.*.filename, ' '), 'iac/')
     steps:
       - uses: actions/checkout@v4
 
